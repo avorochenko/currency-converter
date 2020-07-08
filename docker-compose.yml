@@ -11,6 +11,16 @@ services:
     build: ./converter
     ports: 
       - "3000:3000"
+    deploy:
+      replicas: 1
+      restart_policy:
+        max_attempts: 3
+        condition: on-failure       
+      update_config:
+        parallelism: 3
+        delay: 10s
+    networks: 
+      - balance 
     restart: always
     depends_on:
       - 'sqs'
@@ -21,4 +31,18 @@ services:
       - "9325:9325"
     volumes:
       - ./config/elasticmq.conf:/opt/config/elasticmq.conf
+  balancer:
+    build: ./nginx_balancer
+    ports:
+      - 80:80
+    depends_on:
+      - converter
+    deploy:
+      placement:
+        constraints: [node.role == manager]
+    networks: 
+      - balance
 
+networks:
+  balance:
+    driver: overlay
