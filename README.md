@@ -10,6 +10,3 @@
 The application consists of two microservices.
 - The main task of `api` is to accept requests for currency conversion and send a message to the sqs queue. `api` also accepts a request from a client for a list of currencies.
 - `converter` processes messages from the queue for currency conversion via api https://docs.openexchangerates.org/doc and send email to user with converted rate
-
-# Note
-If I had more time to implement this test. I would suggest using Kubernetes and, for example, https://github.com/veqryn/kube-cloudwatch-autoscaler for scaling pods. Because I have a bit of experience with that.
